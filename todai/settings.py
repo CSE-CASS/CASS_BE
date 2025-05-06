@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "gptapi",
-    "accounts",
     "rest_framework",
     "rest_framework.authtoken",
+    "gptapi",
+    "accounts",
+    "teacher",
+    "student",
 ]
 
 MIDDLEWARE = [

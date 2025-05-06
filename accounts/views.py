@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from .serializers import SignupSerializer
+from .models import Teacher, Student
 
 
 class SignupAPIView(generics.CreateAPIView):
@@ -14,6 +15,13 @@ class SignupAPIView(generics.CreateAPIView):
 
         if serializer.is_valid():
             self.perform_create(serializer)
+            user = self.perform_create(serializer)
+
+            role = request.data.get("role")
+            if role == "teacher":
+                Teacher.objects.create(user=user)
+            elif role == "teacher":
+                Student.objects.create(user=user)
             success_flag = 1
 
             data = serializer.data
