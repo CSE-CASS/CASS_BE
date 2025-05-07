@@ -12,9 +12,9 @@ class CassUser(AbstractUser):
 
 
 class Teacher(models.Model):
-    user = models.OneToOneField(CassUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CassUser, on_delete=models.CASCADE)
 
 
 class Student(models.Model):
-    user = models.OneToOneField(CassUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CassUser, on_delete=models.CASCADE)
     matched = models.BooleanField(default=False)
