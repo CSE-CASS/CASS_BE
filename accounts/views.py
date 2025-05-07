@@ -11,29 +11,20 @@ class SignupAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        success_flag = 0
+        if not serializer.is_valid():
+            return Response({"success": 0, "errors": serializer.errors}, status=400)
 
-        if serializer.is_valid():
-            self.perform_create(serializer)
-            user = self.perform_create(serializer)
+        user = serializer.save()
 
-            role = request.data.get("role")
-            if role == "teacher":
-                Teacher.objects.create(user=user)
-            elif role == "teacher":
-                Student.objects.create(user=user)
-            success_flag = 1
+        role = serializer.validated_data["role"]
+        if role == "teacher":
+            Teacher.objects.create(user=user)
+        elif role == "student":
+            Student.objects.create(user=user)
 
-            data = serializer.data
-            data["success"] = success_flag
-
-            headers = self.get_success_headers(serializer.data)
-            return Response(data, status=status.HTTP_201_CREATED, headers=headers)
-
-        return Response(
-            {"success": success_flag, "errors": serializer.errors},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        data = serializer.data
+        data["success"] = 1
+        return Response(data, status=201)
 
 
 class SigninAPIView(ObtainAuthToken):
