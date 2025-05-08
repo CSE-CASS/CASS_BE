@@ -18,3 +18,4 @@ class Teacher(models.Model):
 class Student(models.Model):
     user = models.ForeignKey(CassUser, on_delete=models.CASCADE)
     matched = models.BooleanField(default=False)
+    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)

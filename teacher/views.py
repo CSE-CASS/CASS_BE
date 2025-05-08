@@ -2,15 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
-from rest_framework import status
-from accounts.models import Teacher, Student
+from accounts.models import Teacher
 from .models import Problem, Matching
-from .serializers import ProblemSerializer, MatchingSerializer
 from django.shortcuts import get_object_or_404
 
 
 class TeacherInfo(APIView):
-    authentication_classses = [TokenAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *arg, **kwargs):
