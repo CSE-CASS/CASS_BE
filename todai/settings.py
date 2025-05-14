@@ -29,6 +29,10 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+# settings.py
+CSRF_TRUSTED_ORIGINS = [
+    "https://port-0-cass-be-manqdhj2c5bed591.sel4.cloudtype.app/",
+]
 
 
 # Application definition
