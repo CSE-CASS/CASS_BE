@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-load_dotenv(os.path.join(BASE_DIR, ".env"))
+load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
 
 
 # Quick-start development settings - unsuitable for production
@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "gptapi",
-    "accounts",
     "rest_framework",
     "rest_framework.authtoken",
+    "gptapi",
+    "accounts",
+    "teacher",
+    "student",
 ]
 
 MIDDLEWARE = [
