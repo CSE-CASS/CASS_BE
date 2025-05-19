@@ -4,7 +4,6 @@ from accounts.models import Teacher, Student
 
 class Problem(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    students = models.ManyToManyField(Student)
     url = models.URLField()
 
     def __str__(self):
