@@ -191,3 +191,19 @@ class DeleteProblem(APIView):
             },
             status=200,
         )
+
+
+class SubmitCheck(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, problem_id, *args, **kwargs):
+        teacher = get_object_or_404(Teacher, user=request.user)
+        problem = get_object_or_404(Problem, id=problem_id, teacher=teacher)
+
+        return Response(
+            {
+                "teacher": teacher.user.name,
+                "problem": problem.id,
+            }
+        )
