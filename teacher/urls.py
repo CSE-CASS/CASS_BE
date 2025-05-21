@@ -5,5 +5,7 @@ urlpatterns = [
     path("info", views.TeacherInfo.as_view()),
     path("m_accept/<str:student_id>", views.MatchingAccept.as_view()),
     path("m_reject/<str:student_id>", views.MatchingReject.as_view()),
+    path("delete_student/<str:student_id>", views.DeleteStudent.as_view()),
     path("add_problem", views.AddProblem.as_view()),
+    path("delete_problem", views.DeleteProblem.as_view()),
 ]

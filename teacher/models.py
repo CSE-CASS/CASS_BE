@@ -4,7 +4,10 @@ from accounts.models import Teacher, Student
 
 class Problem(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    students = models.ManyToManyField(Student)
     url = models.URLField()
+
+    submits = models.TextField()
 
     def __str__(self):
         return f"문제: {self.url} - {self.teacher.user.name}"
