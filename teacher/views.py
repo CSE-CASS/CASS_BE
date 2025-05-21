@@ -1,3 +1,4 @@
+import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -201,9 +202,22 @@ class SubmitCheck(APIView):
         teacher = get_object_or_404(Teacher, user=request.user)
         problem = get_object_or_404(Problem, id=problem_id, teacher=teacher)
 
+        if problem.submits:
+            try:
+                submitted_user_ids = json.loads(problem.submits)
+            except ValueError:
+                submitted_user_ids = []
+        else:
+            submitted_user_ids = []
+
+        result = []
+        for student in problem.students.all():
+            uid = student.user.id
+            result.append({"id": uid, "submit": 1 if uid in submitted_user_ids else 0})
+
         return Response(
             {
-                "teacher": teacher.user.name,
-                "problem": problem.id,
+                "url": problem.url,
+                "submits": result,
             }
         )
