@@ -32,7 +32,13 @@ class StudentInfo(APIView):
             isMatched = 0
             problems = []
 
-        return Response({"isMatched": isMatched, "problems": problems})
+        return Response(
+            {
+                "student_id": student.user.username,
+                "isMatched": isMatched,
+                "problems": problems,
+            }
+        )
 
 
 class MatchingRequest(APIView):
@@ -72,4 +78,45 @@ class MatchingRequest(APIView):
                 "msg": "요청성공",
             },
             status=201,
+        )
+
+
+class Submit(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, problem_id, *args, **kwargs):
+        student = get_object_or_404(Student, user=request.user)
+        problem = get_object_or_404(Problem, id=problem_id)
+
+        if not problem.students.filter(pk=student.pk).exists():
+            return Response(
+                {"success": 0, "msg": "권한이 없는 문제"},
+                status=403,
+            )
+
+        code = request.data.get("code")
+        if code is None:
+            return Response(
+                {"success": 0, "msg": "제출 실패 - 코드가 없습니다"},
+                status=400,
+            )
+
+        raw = problem.submits or ""
+        delimiter = "===\n"
+        entries = [e for e in raw.split(delimiter) if e.strip()]
+        entries = [e for e in entries if e.splitlines()[0] != student.user.username]
+
+        # 5) 새 제출 항목 추가
+        new_entry = f"{student.user.username}\n{code}\n"
+        entries.append(new_entry)
+
+        # 6) 다시 text 필드에 저장
+        problem.submits = delimiter.join(entries)
+        problem.save()
+
+        # 7) 응답
+        return Response(
+            {"success": 1, "msg": "제출 완료"},
+            status=200,
         )
