@@ -30,9 +30,14 @@ class TeacherInfo(APIView):
         ]
 
         problems = Problem.objects.filter(teacher=teacher)
+
+        for problem in problems:
+            problem.students.set(matched_students)
+
         problem_urls = [
             {
                 "id": problem.id,
+                "name": problem.name,
                 "url": problem.url,
             }
             for problem in problems
@@ -40,6 +45,7 @@ class TeacherInfo(APIView):
 
         return Response(
             {
+                "teacher_id": teacher.user.username,
                 "pending_students": pending_students_data,
                 "matching_students": matched_students_data,
                 "problems": problem_urls,
@@ -144,14 +150,16 @@ class AddProblem(APIView):
 
     def post(self, request, *args, **kwargs):
         teacher = get_object_or_404(Teacher, user=request.user)
+        name = request.data.get("name")
         url = request.data.get("url")
 
-        Problem.objects.create(teacher=teacher, url=url)
+        Problem.objects.create(teacher=teacher, name=name, url=url)
 
         problems = Problem.objects.filter(teacher=teacher)
         problem_urls = [
             {
                 "id": problem.id,
+                "name": problem.name,
                 "url": problem.url,
             }
             for problem in problems
@@ -170,9 +178,7 @@ class DeleteProblem(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def delete(self, request, *args, **kwargs):
-        problem_id = request.data.get("id")
-
+    def delete(self, request, problem_id, *args, **kwargs):
         try:
             problem = Problem.objects.get(id=problem_id)
         except Problem.DoesNotExist:
@@ -212,12 +218,17 @@ class SubmitCheck(APIView):
 
         result = []
         for student in problem.students.all():
-            uid = student.user.id
-            result.append({"id": uid, "submit": 1 if uid in submitted_user_ids else 0})
+            username = student.user.username
+            result.append(
+                {
+                    "id": student.user.id,
+                    "submit": 1 if username in submitted_user_ids else 0,
+                }
+            )
 
         return Response(
             {
-                "url": problem.url,
+                "code": problem.submits,
                 "submits": result,
             }
         )

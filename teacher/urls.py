@@ -7,6 +7,6 @@ urlpatterns = [
     path("m_reject/<str:student_id>", views.MatchingReject.as_view()),
     path("delete_student/<str:student_id>", views.DeleteStudent.as_view()),
     path("add_problem", views.AddProblem.as_view()),
-    path("delete_problem", views.DeleteProblem.as_view()),
+    path("delete_problem/<int:problem_id>", views.DeleteProblem.as_view()),
     path("check/<int:problem_id>", views.SubmitCheck.as_view()),
 ]
