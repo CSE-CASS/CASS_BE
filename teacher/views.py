@@ -76,6 +76,7 @@ class MatchingAccept(APIView):
         else:
             student.matched = True
             matching.status = "matching"
+            student.save()
             matching.save()
             return Response(
                 {
