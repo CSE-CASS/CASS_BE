@@ -223,7 +223,8 @@ class SubmitCheck(APIView):
             result.append(
                 {
                     "id": student.user.id,
-                    "submit": 1 if username in submitted_user_ids else 0,
+                    "name": student.user.name,
+                    "submit": 1 if username in problem.submits else 0,
                 }
             )
 
