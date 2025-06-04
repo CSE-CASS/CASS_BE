@@ -21,10 +21,8 @@ class StudentInfo(APIView):
             if match:
                 teacher = match.teacher
 
-                problems = [
-                    {"id": p.name, "url": p.url}
-                    for p in Problem.objects.filter(teacher=teacher)
-                ]
+                qs = Problem.objects.filter(teacher=teacher).values("id", "name", "url")
+                problems = list(qs)
             else:
                 problems = []
         else:
